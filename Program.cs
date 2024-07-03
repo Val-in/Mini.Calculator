@@ -1,11 +1,10 @@
-﻿namespace Mini.Calculator
+﻿using Mini.Calculator.MyLogger;
+
+namespace Mini.Calculator
 {
     public class Program
     {
-        interface ISum
-        {
-            decimal Sum(decimal a, decimal b);
-        }
+        public static ILogger logger = new Logger();
         static void Main(string[] args)
         {
             try
@@ -16,22 +15,22 @@
                 Console.WriteLine("Enter the second number:");
                 decimal b = EnterNumber();
 
-                ISum calculator = new SumTwoNumbers();
+                ISum calculator = new SumTwoNumbers(logger);
                 decimal result = calculator.Sum(a, b);
 
                 Console.WriteLine($"The sum is: {result}");
             }
             catch (FormatException ex)
             {
-                Console.WriteLine("Invalid number format: " + ex.Message);
+                logger.Error("Invalid number format: " + ex.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("An error occurred: " + ex.Message);
+                logger.Error("An error occurred: " + ex.Message);
             }
             finally
             {
-                Console.WriteLine("Calculation finished.");
+                logger.Event("Calculation finished.");
             }
         }
 
@@ -46,17 +45,9 @@
                 }
                 else
                 {
-                    Console.WriteLine("Enter a valid number!");
+                    logger.Error("Enter a valid number!"); //покрасить в красный
                 }
             }
         }
-
-       public class SumTwoNumbers : ISum
-       {
-           public decimal Sum(decimal a, decimal b)
-           {
-               return a + b;
-           }
-       }
     }
 }
